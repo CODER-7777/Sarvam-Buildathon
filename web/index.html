@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Trace — Bug Investigator</title>
+  <meta name="description" content="A local workspace for evidence-backed bug investigations, powered by Sarvam.">
+  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="Trace home"><span class="brand-mark">⌕</span>trace<span class="brand-dot">.</span></a>
+  <div class="workspace"><span class="workspace-icon">L</span><div>Local workspace<small>Developer edition</small></div><span class="local-dot"></span></div>
+  <p class="nav-label">WORKSPACE</p>
+  <nav aria-label="Main navigation">
+    <button class="nav-item active" id="nav-investigate"><span>⌕</span>Investigate</button>
+    <button class="nav-item" id="nav-history"><span>◷</span>History<span class="count" id="history-count">0</span></button>
+    <button class="nav-item" id="nav-integrations"><span>⊞</span>Integrations</button>
+  </nav>
+  <div class="recent-heading">RECENT INVESTIGATIONS</div><div id="recent-list" class="recent-list"><p class="muted">Your investigations will appear here.</p></div>
+  <div class="sidebar-footer"><span class="small-mark">S</span><div>Powered by Sarvam<small>Evidence first. Always.</small></div></div>
+</aside>
+<div class="shell">
+  <header class="topbar"><span>Workspace <span class="slash">/</span> <strong id="breadcrumb">Investigations</strong></span><span class="local-pill"><span class="local-dot"></span> Running locally</span></header>
+  <main>
+    <div id="error" class="error-banner" role="alert" hidden></div>
+    <section id="investigate-view">
+      <div class="page-heading"><div><p class="eyebrow">FROM SYMPTOM TO SOURCE</p><h1>Follow the evidence.</h1><p class="subtitle">Bring the bug. Find the cause. Know what to fix.</p></div><span class="version">MVP / 01</span></div>
+      <div class="entry-grid">
+        <section class="card report-form">
+          <div class="card-heading"><h2>New investigation</h2><span class="badge" id="mode-badge">DEMO MODE</span></div>
+          <form id="bug-form">
+            <fieldset class="mode-switch"><legend class="sr-only">Investigation mode</legend><label><input type="radio" name="mode" value="demo" checked><span>Sample investigation</span></label><label><input type="radio" name="mode" value="connected"><span>Your connected data</span></label></fieldset>
+            <div id="demo-options"><label class="field-label" for="sample">TRY A SCENARIO</label><select id="sample"><option value="checkout">01 · Checkout spinner never stops</option><option value="insufficient">02 · Not enough evidence</option><option value="no_session">03 · Session not found</option><option value="non_bug">04 · A message that isn't a bug</option></select></div>
+            <label class="field-label" for="description">WHAT WENT WRONG?</label><textarea id="description" required minlength="3" maxlength="6000" rows="4" placeholder="Describe what happened, what you expected, and how to reproduce it."></textarea>
+            <div id="connected-options" hidden>
+              <div class="field-row"><div><label class="field-label" for="user-id">USER ID <span>optional</span></label><input id="user-id" maxlength="200" placeholder="Exact service user identifier"></div><div><label class="field-label" for="repository">REPOSITORY SUBFOLDER</label><input id="repository" value="." placeholder="e.g. packages/checkout"></div></div>
+              <details class="context"><summary>Add a time window or diagnostics</summary><div class="field-row"><div><label class="field-label" for="start">FROM (YOUR LOCAL TIME)</label><input id="start" type="datetime-local"></div><div><label class="field-label" for="end">TO (YOUR LOCAL TIME)</label><input id="end" type="datetime-local"></div></div><label class="field-label" for="diagnostics">LOGS / STACK TRACE <span>optional, unverified input</span></label><textarea id="diagnostics" rows="4" maxlength="20000" placeholder="Paste relevant diagnostics. Remove private data first."></textarea></details>
+            </div>
+            <p id="mode-note" class="mode-note">A deterministic sample with synthetic logs and source code. No external services are queried.</p>
+            <div class="form-bottom"><span class="privacy-note">◈ Evidence-backed conclusions</span><button type="submit" class="primary" id="submit">Start investigation <span>↗</span></button></div>
+          </form>
+        </section>
+        <aside class="right-column">
+          <section class="card integrations-card"><div class="card-heading"><h2>Evidence sources</h2><span class="tiny-tag">SERVER</span></div><div id="integration-list"></div><button class="text-button" id="manage-integrations">View configuration <span>→</span></button></section>
+          <div class="principle"><span class="principle-icon">◎</span><h3>A conclusion needs a trail.</h3><p>Every diagnosis links back to collected evidence. When the trail runs out, we say so.</p></div>
+        </aside>
+      </div>
+      <section class="card progress-card" id="progress" aria-live="polite" hidden><div class="progress-title"><span class="spinner"></span><strong id="progress-stage">Queued</strong><span id="elapsed">0s</span></div><progress id="progress-bar" max="100" value="5"></progress><div class="progress-labels"><span>Collect</span><span>Inspect</span><span>Analyze</span><span>Validate</span></div></section>
+      <section id="result" aria-live="polite" hidden></section>
+      <section class="empty-state" id="empty-state"><div class="empty-symbol">⌁</div><div><h3>Your next investigation starts here.</h3><p>Run the checkout sample to see a complete evidence trail in action.</p></div><span class="empty-arrow">↗</span></section>
+    </section>
+    <section id="history-view" hidden><div class="page-heading"><div><p class="eyebrow">THE INVESTIGATION LOG</p><h1>Nothing gets lost.</h1><p class="subtitle">Local records, evidence, and the reasoning behind every outcome.</p></div><button class="secondary" id="new-investigation">New investigation ↗</button></div><div id="history-table"></div></section>
+    <section id="integrations-view" hidden><div class="page-heading"><div><p class="eyebrow">YOUR EVIDENCE NETWORK</p><h1>Connect the dots.</h1><p class="subtitle">Configure credentials on the server. The demo works without them.</p></div></div><div class="config-notice">Run <code>py -m investigator setup</code> in this project, or edit <code>.env</code>, then restart the server. “Configured” means credentials are present, not that a live request has been verified.</div><div id="config-cards" class="config-grid"></div></section>
+    <footer class="page-footer"><span>TRACE / BUG INVESTIGATOR</span><span>Observed facts. Visible uncertainty.</span></footer>
+  </main>
+</div>
+<dialog id="linear-dialog"><form method="dialog"><div class="card-heading"><h2>Review the Linear issue</h2><button class="icon-button" aria-label="Close dialog">×</button></div></form><p>This will send the report and redacted evidence below to your configured Linear team. Demo reports are marked [DEMO].</p><pre id="linear-preview"></pre><div class="dialog-actions"><button class="secondary" id="cancel-linear">Cancel</button><button class="primary" id="confirm-linear">Create issue in Linear ↗</button></div></dialog>
+</body>
+</html>

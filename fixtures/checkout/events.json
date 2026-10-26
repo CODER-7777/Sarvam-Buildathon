@@ -1,0 +1,5 @@
+[
+  {"source":"posthog","title":"Pay clicked","timestamp":"2026-10-20T10:14:02Z","content":"SYNTHETIC fixture: user demo-user-42, session demo-session-7, event payment_clicked, cart demo-cart-9."},
+  {"source":"sentry","title":"Payment gateway timed out","timestamp":"2026-10-20T10:14:12Z","content":"SYNTHETIC fixture: PaymentTimeoutError: payments.charge exceeded 10000ms. user demo-user-42; session demo-session-7; cart demo-cart-9. Stack: submitPayment (checkout.ts:5). Breadcrumbs: payment_clicked -> POST /payments/charge -> HTTP 504 -> reportError(error)."},
+  {"source":"posthog","title":"Loading state remains active","timestamp":"2026-10-20T10:14:42Z","content":"SYNTHETIC fixture: user demo-user-42, session demo-session-7, event checkout_state_snapshot, paymentLoading=true, receiptVisible=false, 30 seconds after PaymentTimeoutError."}
+]
